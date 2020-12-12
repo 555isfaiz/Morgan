@@ -1,0 +1,17 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+	compile fileTree(dir:'../lib',include:['*.jar'])
+}
+
+sourceSets {
+	main {
+		resources {
+			srcDir '../config'
+		}
+	}
+}
+
+version 'unspecified'

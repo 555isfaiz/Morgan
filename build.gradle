@@ -1,0 +1,36 @@
+apply plugin: 'java'
+
+dependencies {
+	compile fileTree(dir: 'lib', include: ['*.jar'])
+}
+
+//task buildShooting(type: Copy) {
+	processResources {
+		from('morgan-shooting/src/main/resources') {
+			include '*.dll'
+		}
+		from('config') {
+			include '*.xml'
+		}
+	}
+
+	sourceSets {
+		main {
+			java {
+				srcDir 'morgan-arch'
+				srcDir 'morgan-shooting'
+			}
+		}
+	}
+
+	jar {
+		manifest {
+			attributes 'Main-Class': 'morgan.logic.GameStart'
+		}
+		from {
+			configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+		}
+	}
+//}
+
+

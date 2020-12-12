@@ -1,0 +1,45 @@
+{
+    "BVector2" : {
+        "msgId" : 102,
+        "1" : "x$float",
+        "2" : "y$float"
+    },
+
+    "BVector3" : {
+        "msgId" : 103,
+        "1" : "x$float",
+        "2" : "y$float",
+        "3" : "z$float"
+    },
+
+    // there will be player status info in the future
+    "BPlayer" : {           
+        "msgId" : 101,
+        "1" : "playerId$int",
+        "2" : "playerName$string",
+        "3" : "side$int",
+        "4" : "curPos$BVector3"
+    },
+
+    "CSLogin" : {
+        "msgId" : 1001
+    },
+
+    "SCJoinGame" : {
+        "msgId" : 1003,
+        "1" : "sessionId$int",
+        "2" : "mySide$int",
+        "3" : "players$[BPlayer]"
+    },
+
+    "SCLogin" : {
+        "msgId" : 1004,
+        "1" : "playerId$int"
+    },
+
+    "SCGameSync" : {
+        "msgId" : 1005,
+        "1" : "sessionId$int",
+        "2" : "players$[BPlayer]"
+    }
+}

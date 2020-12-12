@@ -1,0 +1,46 @@
+{
+    "CSMove" : {
+        "msgId" : 2001,
+        "1" : "playerId$int",
+        "2" : "curPos$BVector3",
+        "3" : "direction$BVector3",
+        "4" : "timeStamp$long"
+    },
+
+    "SCMove" : {
+        "msgId" : 2002,
+        "1" : "playerId$int",
+        "2" : "curPos$BVector3",
+        "3" : "direction$BVector3",
+        "4" : "timeStamp$long",
+        "5" : "result$int"
+    },
+
+    "CSJump" : {
+        "msgId" : 2003,
+        "1" : "playerId$int"
+    },
+
+    "SCJump" : {
+        "msgId" : 2004,
+        "1" : "playerId$int"
+    },
+
+    "CSDash" : {
+        "msgId" : 2005,
+        "1" : "direction$BVector3",
+        "2" : "duration$long"
+    },
+
+    "SCDashStart" : {
+        "msgId" : 2006,
+        "1" : "playerId$int",
+        "2" : "direction$BVector3"
+    },
+
+    "SCDashStop" : {
+        "msgId" : 2007,
+        "1" : "playerId$int",
+        "2" : "finalPos$BVector3"
+    }
+}
