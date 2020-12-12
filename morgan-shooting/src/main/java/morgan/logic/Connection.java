@@ -152,10 +152,12 @@ public class Connection extends Worker {
             return;
 
         _started = false;
-        if (_state == 0)
-            Lobby.playerLogOut_(_playerId);
-        else
-            Game.removePlayer_(_sessionId, _playerId, true);
+        this.schdule(100, () -> {
+			if (_state == 0)
+				Lobby.playerLogOut_(_playerId);
+			else
+				Game.removePlayer_(_sessionId, _playerId, true);
+		});
         Log.connection.info("connection closed! playerId:{}, connId:{}", _playerId, _connId);
         deleteMe();
     }
