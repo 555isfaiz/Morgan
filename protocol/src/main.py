@@ -11,9 +11,9 @@ protocols = []
 
 whiteList = ["MessageBase.java", "MessageSender.java", "MsgHandler.java", "MsgHandler.cs"]
 
-javaPath = "../src/morgan/messages/"
+javaPath = "../morgan-shooting/src/main/java/morgan/messages/"
 
-cppPath = "../shooting/msg/"
+cppPath = "../morgan-shooting/msg/"
 
 csharpPath = "../../../unity/demo/Assets/Scripts/connection/messages/"
 

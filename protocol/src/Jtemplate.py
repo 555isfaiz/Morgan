@@ -28,7 +28,7 @@ CONST_JAVA_TEMPLATE = """package morgan.messages;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ConstMessage {
+public class ConstMessage implements IConstMessage{
 
     private static final Map<Class<? extends MessageBase>, Integer> classToId = new HashMap<>();
 
@@ -40,14 +40,14 @@ public class ConstMessage {
 $classToId
     }
 
-    public static MessageBase getEmptyMessageById(int id){
+    public MessageBase getEmptyMessageById(int id){
         switch (id){
 $caseBody
         }
         return null;
     }
 
-    public static int getMessageId(MessageBase m){
+    public int getMessageId(MessageBase m){
         return classToId.get(m.getClass());
     }
 }"""
