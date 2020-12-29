@@ -3,6 +3,7 @@ package morgan.structure.serialize;
 import morgan.messages.MessageBase;
 import morgan.structure.Call;
 import morgan.structure.Worker;
+import morgan.support.Factory;
 import morgan.support.Utils;
 
 import java.io.IOException;
@@ -109,14 +110,14 @@ public class InputStream extends StreamBase{
         } else if (tag == TYPE_MESSAGE){
 
             int id = Utils.bytesToInt(read(LENGTH_INT));
-            MessageBase m = Worker.getCurrentWorker().getNode().getMessageMap().getEmptyMessageById(id);
+            MessageBase m = Factory.messageMapInstance().getEmptyMessageById(id);
             m.readIn(this);
             result = m;
 
         } else if (tag == TYPE_DISTRCLASS){
 
             int id = Utils.bytesToInt(read(LENGTH_INT));
-            Serializable s = Worker.getCurrentWorker().getNode().getDistrMap().getDistrClassById(id);
+            Serializable s = Factory.distrClassInstance().getDistrClassById(id);
             s.readIn(this);
             result = s;
 

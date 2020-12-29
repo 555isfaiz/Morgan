@@ -43,9 +43,6 @@ public class Node {
     private Map<String, String> _call_dest = new HashMap<>();
     private Map<String, RemoteNode> _remote_node = new HashMap<>();
 
-	private IConstMessage messageMap_;
-	private IConstDistrClass distrMap_;
-
     public Node(String name, String addr){
         _puller.bind(addr);
         _name = name;
@@ -251,15 +248,6 @@ public class Node {
         String sessionId = workers.get(r).split("&")[0].split("\\$")[1];
         return Integer.parseInt(sessionId);
     }
-
-    //use config to load message map and distr map in the future
-    public IConstMessage getMessageMap() { return messageMap_; }
-
-    public void setMessageMap(IConstMessage messageMap) { messageMap_ = messageMap; }
-
-    public IConstDistrClass getDistrMap() { return distrMap_; }
-
-    public void setDistrMap(IConstDistrClass distrMap) { distrMap_ = distrMap; }
 
     public String getName(){
         return _name;

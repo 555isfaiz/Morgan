@@ -3,6 +3,7 @@ package morgan.structure.serialize;
 import morgan.messages.MessageBase;
 import morgan.structure.Call;
 import morgan.structure.Worker;
+import morgan.support.Factory;
 import morgan.support.Utils;
 
 import java.nio.charset.StandardCharsets;
@@ -183,12 +184,12 @@ public class OutputStream extends StreamBase{
 
         } else if (obj instanceof Serializable){
 
-            writeTandId(TYPE_DISTRCLASS, Worker.getCurrentWorker().getNode().getDistrMap().getDistrClassId((Serializable) obj));
+            writeTandId(TYPE_DISTRCLASS, Factory.distrClassInstance().getDistrClassId((Serializable) obj));
             ((Serializable)obj).writeOut(this);
 
         } else if (obj instanceof MessageBase){
 
-            writeTandId(TYPE_MESSAGE, Worker.getCurrentWorker().getNode().getMessageMap().getMessageId((MessageBase)obj));
+            writeTandId(TYPE_MESSAGE, Factory.messageMapInstance().getMessageId((MessageBase)obj));
             ((MessageBase)obj).writeOut(this);
 
         } else {

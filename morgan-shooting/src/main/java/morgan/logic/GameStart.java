@@ -1,11 +1,12 @@
 package morgan.logic;
 
-import morgan.connection.ConnStartUp;
+import morgan.connection.ConnStarter;
 import morgan.messages.ConstMessage;
 import morgan.natives.NtvManager;
 import morgan.structure.Node;
 import morgan.structure.Worker;
 import morgan.support.ConstDistrClass;
+import morgan.support.Factory;
 import morgan.support.NtvFunctions;
 
 public class GameStart {
@@ -21,9 +22,10 @@ public class GameStart {
         node.addWorker(lobby);
         Worker global = new GlobalPlayerManager(node);
         node.addWorker(global);
-        node.setDistrMap(new ConstDistrClass());
-        node.setMessageMap(new ConstMessage());
-        ConnStartUp.startUp(node);
+		Factory.designateConstMessage(ConstMessage.class);
+		Factory.designateConstDistrClass(ConstDistrClass.class);
+		Factory.designateConnectionClass(Connection.class);
+        ConnStarter.startUp(node);
         NtvManager.setNtvFunctions(new NtvFunctions());
         NtvManager.loadMeshes("./objs/Player.obj");
         node.startUp();

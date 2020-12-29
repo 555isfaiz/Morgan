@@ -5,6 +5,7 @@ import morgan.logic.Game;
 import morgan.logic.Lobby;
 import morgan.structure.Worker;
 import morgan.structure.serialize.InputStream;
+import morgan.support.Factory;
 import morgan.support.Log;
 import morgan.support.functions.Function3;
 
@@ -32,7 +33,7 @@ public class MsgHandler {
     }
 
     public void handle(int sender, MessageBase msg){
-        handle(sender, _owner.getNode().getMessageMap().getMessageId(msg), msg);
+        handle(sender, Factory.messageMapInstance().getMessageId(msg), msg);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
