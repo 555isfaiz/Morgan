@@ -19,6 +19,7 @@ dependencies {
 			java {
 				srcDir 'morgan-arch'
 				srcDir 'morgan-shooting'
+				srcDir 'morgan-card'
 			}
 		}
 	}

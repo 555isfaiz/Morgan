@@ -1,0 +1,15 @@
+plugins {
+	id 'java'
+}
+
+version 'unspecified'
+
+processResources {
+	from('src/main/resources') {
+		include '*.dll'
+	}
+}
+
+dependencies {
+	compile project(":morgan-arch")
+}

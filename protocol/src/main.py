@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 from Jtemplate import *
 from CPPtemplate import *
 from CSharptemplate import *
@@ -13,9 +14,17 @@ whiteList = ["MessageBase.java", "MessageSender.java", "MsgHandler.java", "MsgHa
 
 javaPath = "../morgan-shooting/src/main/java/morgan/messages/"
 
-cppPath = "../morgan-shooting/msg/"
+cppPath = "../../morgan-shooting/msg/"
 
-csharpPath = "../../../unity/demo/Assets/Scripts/connection/messages/"
+csharpPath = "../../../../unity/demo/Assets/Scripts/connection/messages/"
+
+if sys.argv.__len__() >= 2:
+    path_ = sys.argv[1]
+    
+if sys.argv.__len__() >= 3:
+    javaPath = sys.argv[2]
+    
+print(os.getcwd())
 
 #delete all first
 for f in os.listdir(javaPath):
@@ -35,7 +44,7 @@ for f in os.listdir(path_):
     
     if f.endswith(".ptc"):
         # content = open(f).read()
-        fHandle = open(f)
+        fHandle = open(path_ + f)
         content = ""
         for r in fHandle.readlines():
             r = r.strip();
