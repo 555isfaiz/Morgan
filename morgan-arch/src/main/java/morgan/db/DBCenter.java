@@ -2,6 +2,7 @@ package morgan.db;
 
 import morgan.structure.Node;
 import morgan.structure.Worker;
+import morgan.support.Config;
 import morgan.support.Log;
 import morgan.support.functions.Function1;
 
@@ -26,10 +27,7 @@ public class DBCenter extends Worker {
         // assign tables to serveral dbworkers
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String dburl_ = "jdbc:mysql://localhost:3306/morgan?useSSL=false&serverTimezone=UTC&nullCatalogMeansCurrent=true";
-            String usr_ = "root";
-            String psw_ = "123456";
-            Connection conn = DriverManager.getConnection(dburl_, usr_, psw_);
+            Connection conn = DriverManager.getConnection(Config.MAIN_CONFIG_INST.DB_URL, Config.MAIN_CONFIG_INST.DB_USER, Config.MAIN_CONFIG_INST.DB_PASSWORD);
             DatabaseMetaData meta = conn.getMetaData();
             ResultSet rs = meta.getTables(null, null, null, new String[]{"TABLE"});
             Map<Integer, List<String>> assign = new HashMap<>();
@@ -54,7 +52,8 @@ public class DBCenter extends Worker {
 
             conn.close();
         } catch (Exception e) {
-            Log.db.error("init dbcenter failed, e:{}", e.getMessage());
+            Log.db.error("init DB center failed, e:{}", e.getMessage());
+            e.printStackTrace();
         }
     }
 
