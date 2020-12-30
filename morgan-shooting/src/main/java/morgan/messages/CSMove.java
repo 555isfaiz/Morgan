@@ -5,14 +5,14 @@ import morgan.structure.serialize.OutputStream;
 
 
 
-public class CSMove extends MessageBase{
+public class CSMove extends MessageBase {
     public int playerId;
     public BVector3 curPos;
     public BVector3 direction;
     public long timeStamp;
 
 
-    public CSMove(){
+    public CSMove() {
         msgId = 2001;
     }
 

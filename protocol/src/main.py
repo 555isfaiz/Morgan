@@ -18,22 +18,26 @@ cppPath = "../../morgan-shooting/msg/"
 
 csharpPath = "../../../../unity/demo/Assets/Scripts/connection/messages/"
 
+genCpp = False
+
 if sys.argv.__len__() >= 2:
     path_ = sys.argv[1]
     
 if sys.argv.__len__() >= 3:
     javaPath = sys.argv[2]
-    
-print(os.getcwd())
 
+if sys.argv.__len__() >= 4:
+    genCpp = sys.argv[3] == "-gencpp"
+    
 #delete all first
 for f in os.listdir(javaPath):
     if f.endswith(".java") and f not in whiteList:
         os.remove(javaPath + f)
         
-for f in os.listdir(cppPath):
-    if f.startswith("ms_message"):
-        os.remove(cppPath + f)
+if genCpp:
+    for f in os.listdir(cppPath):
+        if f.startswith("ms_message"):
+            os.remove(cppPath + f)
         
 for f in os.listdir(csharpPath):
     if f not in whiteList:
@@ -91,11 +95,12 @@ for p in protocols:
     constJ_classToId += p.getConstJavaClassToId()
     constJ_caseBody += p.getConstJavaCaseBody()
     
-    #append cpps
-    cpp_h_ClassBody += p.getCPPClassBody(CLASS_BODY)
-    cpp_c_writeAndRead += p.getCPPWriteOut()
-    cpp_c_writeAndRead += p.getCPPReadIn()
-    cpp_c_getIds += p.getCPPGetIds()
+    if genCpp:
+        #append cpps
+        cpp_h_ClassBody += p.getCPPClassBody(CLASS_BODY)
+        cpp_c_writeAndRead += p.getCPPWriteOut()
+        cpp_c_writeAndRead += p.getCPPReadIn()
+        cpp_c_getIds += p.getCPPGetIds()
     
     #gen csharp
     csName = csharpPath + p.name + ".cs"
@@ -113,18 +118,19 @@ constFName = javaPath + "ConstMessage.java"
 cf = open(constFName, 'w')
 cf.write(CONST_JAVA_TEMPLATE.replace("$classToId", constJ_classToId).replace("$caseBody", constJ_caseBody))
 cf.close()
-            
-#gen cpp .h file
-hFName = cppPath + "ms_message.h"
-hf = open(hFName, 'w')
-hf.write(CPP_H_TEMPLATE.replace("$classBody", cpp_h_ClassBody))
-hf.close()
+      
+if genCpp:      
+    #gen cpp .h file
+    hFName = cppPath + "ms_message.h"
+    hf = open(hFName, 'w')
+    hf.write(CPP_H_TEMPLATE.replace("$classBody", cpp_h_ClassBody))
+    hf.close()
 
-#gen cpp .cpp file
-hCName = cppPath + "ms_message.cpp"
-cppF = open(hCName, 'w')
-cppF.write(CPP_C_TEMPLATE.replace("$writeAndRead", cpp_c_writeAndRead).replace("$caseBody", cpp_c_getIds))
-cppF.close()
+    #gen cpp .cpp file
+    hCName = cppPath + "ms_message.cpp"
+    cppF = open(hCName, 'w')
+    cppF.write(CPP_C_TEMPLATE.replace("$writeAndRead", cpp_c_writeAndRead).replace("$caseBody", cpp_c_getIds))
+    cppF.close()
 
 #gen csharp MessageBase
 csBase = csharpPath + "MessageBase.cs"

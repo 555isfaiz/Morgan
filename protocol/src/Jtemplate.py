@@ -5,10 +5,10 @@ import morgan.structure.serialize.OutputStream;
 
 $importList
 
-public class $name extends MessageBase{
+public class $name extends MessageBase {
     $fields
 
-    public $name(){
+    public $name() {
         msgId = $msgId;
     }
 
@@ -28,7 +28,7 @@ CONST_JAVA_TEMPLATE = """package morgan.messages;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ConstMessage implements IConstMessage{
+public class ConstMessage implements IConstMessage {
 
     private static final Map<Class<? extends MessageBase>, Integer> classToId = new HashMap<>();
 
@@ -36,18 +36,18 @@ public class ConstMessage implements IConstMessage{
         initIdToClass();
     }
 
-    private static void initIdToClass(){
+    private static void initIdToClass() {
 $classToId
     }
 
-    public MessageBase getEmptyMessageById(int id){
+    public MessageBase getEmptyMessageById(int id) {
         switch (id){
 $caseBody
         }
         return null;
     }
 
-    public int getMessageId(MessageBase m){
+    public int getMessageId(MessageBase m) {
         return classToId.get(m.getClass());
     }
 }"""

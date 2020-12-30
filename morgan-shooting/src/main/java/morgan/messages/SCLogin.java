@@ -5,11 +5,11 @@ import morgan.structure.serialize.OutputStream;
 
 
 
-public class SCLogin extends MessageBase{
+public class SCLogin extends MessageBase {
     public int playerId;
 
 
-    public SCLogin(){
+    public SCLogin() {
         msgId = 1004;
     }
 

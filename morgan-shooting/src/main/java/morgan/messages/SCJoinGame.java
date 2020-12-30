@@ -6,13 +6,13 @@ import morgan.structure.serialize.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SCJoinGame extends MessageBase{
+public class SCJoinGame extends MessageBase {
     public int sessionId;
     public int mySide;
     public List<BPlayer> players = new ArrayList<>();
 
 
-    public SCJoinGame(){
+    public SCJoinGame() {
         msgId = 1003;
     }
 

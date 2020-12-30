@@ -5,14 +5,14 @@ import morgan.structure.serialize.OutputStream;
 
 
 
-public class BPlayer extends MessageBase{
+public class BPlayer extends MessageBase {
     public int playerId;
     public String playerName;
     public int side;
     public BVector3 curPos;
 
 
-    public BPlayer(){
+    public BPlayer() {
         msgId = 101;
     }
 

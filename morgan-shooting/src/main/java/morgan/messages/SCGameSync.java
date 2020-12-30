@@ -6,12 +6,12 @@ import morgan.structure.serialize.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SCGameSync extends MessageBase{
+public class SCGameSync extends MessageBase {
     public int sessionId;
     public List<BPlayer> players = new ArrayList<>();
 
 
-    public SCGameSync(){
+    public SCGameSync() {
         msgId = 1005;
     }
 

@@ -5,7 +5,7 @@ import morgan.structure.serialize.OutputStream;
 
 
 
-public class SCMove extends MessageBase{
+public class SCMove extends MessageBase {
     public int playerId;
     public BVector3 curPos;
     public BVector3 direction;
@@ -13,7 +13,7 @@ public class SCMove extends MessageBase{
     public int result;
 
 
-    public SCMove(){
+    public SCMove() {
         msgId = 2002;
     }
 

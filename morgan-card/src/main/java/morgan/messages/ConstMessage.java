@@ -11,18 +11,18 @@ public class ConstMessage implements IConstMessage {
         initIdToClass();
     }
 
-    private static void initIdToClass(){
+    private static void initIdToClass() {
 
     }
 
-    public MessageBase getEmptyMessageById(int id){
+    public MessageBase getEmptyMessageById(int id) {
         switch (id){
 
         }
         return null;
     }
 
-    public int getMessageId(MessageBase m){
+    public int getMessageId(MessageBase m) {
         return classToId.get(m.getClass());
     }
 }

@@ -5,11 +5,11 @@ import morgan.structure.serialize.OutputStream;
 
 
 
-public class SCJump extends MessageBase{
+public class SCJump extends MessageBase {
     public int playerId;
 
 
-    public SCJump(){
+    public SCJump() {
         msgId = 2004;
     }
 

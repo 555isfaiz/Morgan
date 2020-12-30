@@ -5,12 +5,12 @@ import morgan.structure.serialize.OutputStream;
 
 
 
-public class CSDash extends MessageBase{
+public class CSDash extends MessageBase {
     public BVector3 direction;
     public long duration;
 
 
-    public CSDash(){
+    public CSDash() {
         msgId = 2005;
     }
 

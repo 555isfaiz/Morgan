@@ -3,7 +3,7 @@ package morgan.messages;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ConstMessage implements IConstMessage{
+public class ConstMessage implements IConstMessage {
 
     private static final Map<Class<? extends MessageBase>, Integer> classToId = new HashMap<>();
 
@@ -11,7 +11,7 @@ public class ConstMessage implements IConstMessage{
         initIdToClass();
     }
 
-    private static void initIdToClass(){
+    private static void initIdToClass() {
         classToId.put(BVector2.class, 102);
         classToId.put(BVector3.class, 103);
         classToId.put(BPlayer.class, 101);
@@ -29,7 +29,7 @@ public class ConstMessage implements IConstMessage{
 
     }
 
-    public MessageBase getEmptyMessageById(int id){
+    public MessageBase getEmptyMessageById(int id) {
         switch (id){
             case 102:
                 return new BVector2();
@@ -64,7 +64,7 @@ public class ConstMessage implements IConstMessage{
         return null;
     }
 
-    public int getMessageId(MessageBase m){
+    public int getMessageId(MessageBase m) {
         return classToId.get(m.getClass());
     }
 }

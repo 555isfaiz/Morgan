@@ -5,12 +5,12 @@ import morgan.structure.serialize.OutputStream;
 
 
 
-public class SCDashStart extends MessageBase{
+public class SCDashStart extends MessageBase {
     public int playerId;
     public BVector3 direction;
 
 
-    public SCDashStart(){
+    public SCDashStart() {
         msgId = 2006;
     }
 

@@ -5,10 +5,10 @@ import morgan.structure.serialize.OutputStream;
 
 
 
-public class CSLogin extends MessageBase{
+public class CSLogin extends MessageBase {
     
 
-    public CSLogin(){
+    public CSLogin() {
         msgId = 1001;
     }
 

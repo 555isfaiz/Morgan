@@ -5,13 +5,13 @@ import morgan.structure.serialize.OutputStream;
 
 
 
-public class BVector3 extends MessageBase{
+public class BVector3 extends MessageBase {
     public float x;
     public float y;
     public float z;
 
 
-    public BVector3(){
+    public BVector3() {
         msgId = 103;
     }
 
