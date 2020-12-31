@@ -12,6 +12,11 @@ public class DBItem {
 
     public DBItem() {}
 
+    public DBItem(DBTable table, Record r) {
+    	table_ = table;
+		columns_.addAll(r.values.values());
+	}
+
     public DBTask onUpdate(List<Integer> indexs, List<Object> values) {
         DBTask task = new DBTaskUpdate();
         List<String> labels = new ArrayList<>();

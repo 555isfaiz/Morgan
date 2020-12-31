@@ -4,6 +4,7 @@ import morgan.db.tasks.DBTask;
 import morgan.db.tasks.DBTaskQueryWithBinds;
 import morgan.db.tasks.DBTaskQueryWithId;
 import morgan.structure.Call;
+import morgan.support.Config;
 import morgan.support.Log;
 
 import java.sql.ResultSet;
@@ -19,8 +20,6 @@ public class DBTable {
     private Map<Integer, LinkedBlockingQueue<DBTask>> tasks_ = new HashMap<>();
     private String name_;
     private DBWorker worker_;
-
-    private final int mergeLimit_ = 50;
 
     public DBTable(DBWorker worker, String tableName, ResultSet tableInfo, ResultSet columns) {
         worker_ = worker;
@@ -40,7 +39,7 @@ public class DBTable {
             }
 
             //load items
-            loadItems(columns);
+//            loadItems(columns);
 
             name_ = tableName;
 
@@ -54,40 +53,44 @@ public class DBTable {
         mergeAndCommit();
     }
 
-    public void loadItems(ResultSet rs) throws SQLException {
-        while (rs.next()) {
-            DBItem item = new DBItem();
-            int id = 0;
-            for (var e : columns_.entrySet()) {
-                if (e.getValue() == DBItemTypes.INT){
-                    int intVal = rs.getInt(e.getKey());
-                    item.addColumn(intVal);
-                    if (id == 0)
-                        // record id
-                        id = intVal;
-                }
+//    public void loadItems(ResultSet rs) throws SQLException {
+//        while (rs.next()) {
+//            DBItem item = new DBItem();
+//            int id = 0;
+//            for (var e : columns_.entrySet()) {
+//                if (e.getValue() == DBItemTypes.INT){
+//                    int intVal = rs.getInt(e.getKey());
+//                    item.addColumn(intVal);
+//                    if (id == 0)
+//                        // record id
+//                        id = intVal;
+//                }
+//
+//                else if (e.getValue() == DBItemTypes.DOUBLE)
+//                    item.addColumn(rs.getDouble(e.getKey()));
+//
+//                else if (e.getValue() == DBItemTypes.FLOAT)
+//                    item.addColumn(rs.getFloat(e.getKey()));
+//
+//                else if (e.getValue() == DBItemTypes.BIGINT)
+//                    item.addColumn(rs.getLong(e.getKey()));
+//
+//                else if (e.getValue() == DBItemTypes.VARCHAR)
+//                    item.addColumn(rs.getString(e.getKey()));
+//
+//                //...fill this in the future
+//
+//                else
+//                    Log.db.error("unknown column type:{}, label:{}", e.getValue(), e.getKey());
+//            }
+//            item.table(this);
+//            items_.put(id, item);
+//        }
+//    }
 
-                else if (e.getValue() == DBItemTypes.DOUBLE)
-                    item.addColumn(rs.getDouble(e.getKey()));
-
-                else if (e.getValue() == DBItemTypes.FLOAT)
-                    item.addColumn(rs.getFloat(e.getKey()));
-
-                else if (e.getValue() == DBItemTypes.BIGINT)
-                    item.addColumn(rs.getLong(e.getKey()));
-
-                else if (e.getValue() == DBItemTypes.VARCHAR)
-                    item.addColumn(rs.getString(e.getKey()));
-
-                //...fill this in the future
-
-                else
-                    Log.db.error("unknown column type:{}, label:{}", e.getValue(), e.getKey());
-            }
-            item.table(this);
-            items_.put(id, item);
-        }
-    }
+	public void addItem(DBItem item) {
+    	items_.put((Integer) item.getColumn(0), item);
+	}
 
     public int insert(Map<String, Object> values) {
         for (var e : columns_.entrySet()) {
@@ -135,11 +138,9 @@ public class DBTable {
     }
 
     public void remove(int cid) {
-        var i = items_.get(cid);
+        var i = items_.remove(cid);
         if (i == null)
             return;
-
-        items_.remove(cid);
 
         addTask(cid, i.onRemove());
 
@@ -149,9 +150,12 @@ public class DBTable {
     public void query(Call queryCall, int cid) {
         var item = items_.get(cid);
         if (item == null) {
-            Log.db.error("item not found! table:{}, columnId:{}", name_, cid);
-            DBTask taks = new DBTaskQueryWithId();
-            addTask(cid, taks);
+            DBTask task = new DBTaskQueryWithBinds();
+			task.queryCall_ = queryCall;
+			task.labels_.add("id");
+			task.values_.add(cid);
+			task.tableName_ = name_;
+            addTask(cid, task);
             return;
         }
 
@@ -167,9 +171,15 @@ public class DBTable {
         taks.labels_.add(label);
         taks.values_.add(value);
         taks.tableName_ = name_;
-        taks.beforeProcess();
         worker_.addTask(name_, taks);
     }
+
+    public void free(int cid) {
+		if (!tasks_.isEmpty())
+			mergeAndCommit();
+
+		items_.remove(cid);
+	}
 
     public void addTask(int cid, DBTask task) {
         task.tableName_ = name_;
@@ -199,7 +209,7 @@ public class DBTable {
 //                System.out.println("now");
             if(q.size() >= 1) {
                 DBTask t = q.poll();
-                int size = Math.min(q.size(), mergeLimit_);
+                int size = Math.min(q.size(), Config.MAIN_CONFIG_INST.DB_MERGE_LIMIT);
                 for (int i = 0; i < size; i++) {
                     try {
                         t = t.merge(q.peek());
@@ -210,7 +220,7 @@ public class DBTable {
                 }
                 if (t == null)
                     continue;
-                t.beforeProcess();
+                t.beforeProcess(this);
                 worker_.addTask(name_, t);
             }
         }

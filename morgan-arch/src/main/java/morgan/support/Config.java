@@ -17,6 +17,10 @@ public class Config {
 
 	public final String DB_PASSWORD = null;
 
+	public final Integer DB_MERGE_LIMIT = null;
+
+	public final Integer DB_WORKER_NUM = null;
+
 	static {
 		fill();
 	}
@@ -71,10 +75,9 @@ public class Config {
 			if (pairs.containsKey(f.getName()))
 				fillField(f, inst, pairs.get(f.getName()));
 		}
-		fillOverride();
 		MAIN_CONFIG_INST = inst;
+		fillOverride();
 	}
 
-	protected static void fillOverride() {
-	}
+	protected static void fillOverride() {}
 }

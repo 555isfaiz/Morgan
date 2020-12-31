@@ -13,6 +13,7 @@ import java.util.Map;
 public class Record implements Serializable {
 
     public Map<String, Object> values = new LinkedHashMap<>();
+    public String table;
 
     public Record(DBItem item) {
         for (int i = 0; i < item.columnSize(); i++) {
@@ -61,4 +62,8 @@ public class Record implements Serializable {
     public String toString() {
         return values.toString();
     }
+
+    public void free() {
+		DBWorker.free_(DBCenter.getAssignedWorkerId(table), table, (Integer) values.get("id"));
+	}
 }

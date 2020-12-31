@@ -15,15 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DBCenter extends Worker {
+public class DBCenter {
     /*key: table name, value: DBWorker name*/
-    private Map<String, String> dbworkers_ = new HashMap<>();
-    public DBCenter(Node node, String name) {
-        super(node, name);
-        init();
-    }
+    private static Map<String, String> dbworkers_ = new HashMap<>();
 
-    private void init() {
+    public static void init(Node node) {
         // assign tables to serveral dbworkers
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -34,7 +30,7 @@ public class DBCenter extends Worker {
             while (rs.next()) {
                 String tableName = rs.getString("TABLE_NAME");
                 int hash = Math.abs(tableName.hashCode());
-                int index = hash % 5;
+                int index = hash % Config.MAIN_CONFIG_INST.DB_WORKER_NUM;
                 dbworkers_.put(tableName, "DBWorker" + index);
                 assign.compute(index, (i, l) -> {
                     if (l == null)
@@ -45,9 +41,9 @@ public class DBCenter extends Worker {
             }
 
             for (var e : assign.entrySet()) {
-                DBWorker w = new DBWorker(getNode(), "DBWorker" + e.getKey());
+                DBWorker w = new DBWorker(node, "DBWorker" + e.getKey());
                 w.init(e.getValue());
-                _node.addWorkerStandAlone(w);
+                node.addWorkerStandAlone(w);
             }
 
             conn.close();
@@ -57,15 +53,17 @@ public class DBCenter extends Worker {
         }
     }
 
-    public void getAssignedWorker(String table) {
+    public static String getAssignedWorker(String table) {
         String worker = dbworkers_.get(table);
         if (worker != null)
-            returns(worker);
-        returns("result", -1);
+            return worker;
+        return "";
     }
 
-    @Override
-    public void registMethods() {
-        _methodManager.registMethod("getAssignedWorker", (Function1<String>)this::getAssignedWorker, String.class);
-    }
+    public static int getAssignedWorkerId(String table) {
+		String worker = dbworkers_.get(table);
+		if (worker != null)
+			return Integer.parseInt(worker.split("-")[1]);
+		return -99;
+	}
 }

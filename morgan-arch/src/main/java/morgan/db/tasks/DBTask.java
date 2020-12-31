@@ -1,5 +1,6 @@
 package morgan.db.tasks;
 
+import morgan.db.DBTable;
 import morgan.db.Record;
 import morgan.structure.Call;
 import morgan.support.functions.Function2;
@@ -20,6 +21,8 @@ public abstract class DBTask {
 
     public String tableName_ = null;
 
+    public DBTable table_;
+
     public int cid_;
 
     public List<String> labels_ = new ArrayList<>();
@@ -36,7 +39,7 @@ public abstract class DBTask {
 
     public Function2<List<Record>, Call> queryCallBack_;
 
-    public abstract void beforeProcess();
+    public abstract void beforeProcess(DBTable table);
 
     public abstract void process(Connection conn);
 

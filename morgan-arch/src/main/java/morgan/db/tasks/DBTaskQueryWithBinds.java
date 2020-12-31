@@ -1,5 +1,7 @@
 package morgan.db.tasks;
 
+import morgan.db.DBItem;
+import morgan.db.DBTable;
 import morgan.db.Record;
 import morgan.support.Log;
 
@@ -16,7 +18,8 @@ public class DBTaskQueryWithBinds extends DBTask {
     }
 
     @Override
-    public void beforeProcess() {
+    public void beforeProcess(DBTable table) {
+    	this.table_ = table;
         sql_ = "SELECT * FROM " + tableName_ + " WHERE ";
         sql_ += labels_.get(0) + " = '" + values_.get(0) + "';";
     }
@@ -28,7 +31,10 @@ public class DBTaskQueryWithBinds extends DBTask {
             ResultSet result = stmt.executeQuery(sql_);
             List<Record> r = new ArrayList<>();
             while (result.next()) {
-                r.add(new Record(result));
+            	var record = new Record(result);
+                r.add(record);
+				var item = new DBItem(table_, record);
+				table_.addItem(item);
             }
             queryCallBack_.apply(r, queryCall_);
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package morgan.db.tasks;
 
+import morgan.db.DBTable;
 import morgan.db.Record;
 
 import java.sql.Connection;
@@ -15,7 +16,9 @@ public class DBTaskQueryWithId extends DBTask {
     }
 
     @Override
-    public void beforeProcess() {}
+    public void beforeProcess(DBTable table) {
+		this.table_ = table;
+	}
 
     @Override
     public void process(Connection conn) {

@@ -7,8 +7,7 @@ public class DBStartUp {
 
     public static void main(String[] args) {
         Node node = new Node("Conn", "tcp://127.0.0.1:3340");
-        Worker dbcenter = new DBCenter(node, "DBCenter");
-        node.addWorker(dbcenter);
+        DBCenter.init(node);
         node.startUp();
 //        dbcenter.schdule(1000, () -> {
 //            dbcenter.Call("remove", "DBWorker1", "test_two", 1003);

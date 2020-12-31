@@ -1,5 +1,6 @@
 package morgan.db.tasks;
 
+import morgan.db.DBTable;
 import morgan.support.Log;
 
 import java.sql.Connection;
@@ -12,7 +13,8 @@ public class DBTaskUpdate extends DBTask {
     }
 
     @Override
-    public void beforeProcess() {
+    public void beforeProcess(DBTable table) {
+		this.table_ = table;
         StringBuilder sql = new StringBuilder("UPDATE " + tableName_ + " SET ");
         for (int i = 0; i < labels_.size(); i++) {
             sql.append(labels_.get(i)).append(" = '").append(values_.get(i)).append("'");

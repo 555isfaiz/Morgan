@@ -4,6 +4,7 @@ import morgan.db.tasks.DBTask;
 import morgan.structure.Call;
 import morgan.structure.Node;
 import morgan.structure.Worker;
+import morgan.support.Config;
 import morgan.support.Log;
 import morgan.support.functions.Function1;
 import morgan.support.functions.Function2;
@@ -36,7 +37,7 @@ public class DBWorker extends Worker {
                 continue;
             }
             t.process(dbconn_);
-            Log.db.info("task execed! tast:{}, sql:{}", t.getClass().getName(), t.sql_);
+            Log.db.info("task executed! task:{}, sql:{}", t.getClass().getName(), t.sql_);
         }
 
         for (var table : tables_.values()) {
@@ -48,11 +49,7 @@ public class DBWorker extends Worker {
         if (dbInited)
             return;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String dburl_ = "jdbc:mysql://localhost:3306/morgan?useSSL=false&serverTimezone=UTC";
-            String usr_ = "root";
-            String psw_ = "123456";
-            dbconn_ = DriverManager.getConnection(dburl_, usr_, psw_);
+            dbconn_ = DriverManager.getConnection(Config.MAIN_CONFIG_INST.DB_URL, Config.MAIN_CONFIG_INST.DB_USER, Config.MAIN_CONFIG_INST.DB_PASSWORD);
             DatabaseMetaData meta = dbconn_.getMetaData();
             Statement stat = dbconn_.createStatement();
             for (var table : tables) {
@@ -62,7 +59,7 @@ public class DBWorker extends Worker {
             }
             dbInited = true;
         } catch (Exception e) {
-            Log.db.error("init dbworker failed, e:{}", e.getMessage());
+            Log.db.error("init db worker failed, e:{}", e.getMessage());
         }
         Log.db.info("{} inited! tables:{}", _name, tables_.keySet());
     }
@@ -101,6 +98,10 @@ public class DBWorker extends Worker {
         returns("code", t.insert(values));
     }
 
+    public static void insert_(int workerId, String table, Map<String, Object> values) {
+    	CallWithStack0(workerId, table, values);
+	}
+
     public void selectById(String table, int cid) {
         var t = tables_.get(table);
         if (t == null)
@@ -108,6 +109,10 @@ public class DBWorker extends Worker {
 
         t.query(getCurrentCall(), cid);
     }
+
+    public static void selectById_(int workerId, String table, int cid) {
+    	CallWithStack0(workerId, table, cid);
+	}
 
     public void selectByBinds(String table, String label, Object value) {
         var t = tables_.get(table);
@@ -117,6 +122,10 @@ public class DBWorker extends Worker {
         t.query(getCurrentCall(), label, value);
     }
 
+    public static void selectByBinds_(int workerId, String table, String label, Object value) {
+    	CallWithStack0(workerId, table, label, value);
+	}
+
     public void update(String table, int cid, List<String> labels, List<Object> values) {
         var t = tables_.get(table);
         if (t == null)
@@ -125,6 +134,10 @@ public class DBWorker extends Worker {
         t.update(cid, labels, values);
     }
 
+    public static void update_(int workerId, String table, int cid, List<String> labels, List<Object> values) {
+    	CallWithStack0(workerId, table, cid, labels, values);
+	}
+
     public void remove(String table, int cid) {
         var t = tables_.get(table);
         if (t == null)
@@ -132,6 +145,10 @@ public class DBWorker extends Worker {
 
         t.remove(cid);
     }
+
+    public void remove_(int workerId, String table, int cid) {
+    	CallWithStack0(workerId, table, cid);
+	}
 
     private void returnQuery(List<Record> resultSet, Call call) {
         returns(call, "result", resultSet);
@@ -152,9 +169,25 @@ public class DBWorker extends Worker {
                 stat.execute(sql);
             }
         } catch (Exception e) {
-            Log.db.error("DB Exception when excuting: {} \n {}", sql, e);
+            Log.db.error("DB Exception when executing: {} \n {}", sql, e);
         }
     }
+
+    public static void execRawStatement_(int workerId, String sql) {
+    	CallWithStack0(workerId, sql);
+	}
+
+	public void free(String table, int cid) {
+		var t = tables_.get(table);
+		if (t == null)
+			return;
+
+		t.free(cid);
+	}
+
+	public static void free_(int workerId, String table, int cid) {
+    	CallWithStack0(workerId, table, cid);
+	}
 
     @Override
     public void registMethods() {
@@ -164,5 +197,6 @@ public class DBWorker extends Worker {
         _methodManager.registMethod("update", (Function4<String, Integer, List<String>, List<Object>>)this::update, String.class, Integer.class, List.class, List.class);
         _methodManager.registMethod("remove", (Function2<String, Integer>)this::remove, String.class, Integer.class);
         _methodManager.registMethod("execRawStatement", (Function1<String>)this::execRawStatement, String.class);
+        _methodManager.registMethod("free", (Function2<String, Integer>)this::free, String.class, Integer.class);
     }
 }
