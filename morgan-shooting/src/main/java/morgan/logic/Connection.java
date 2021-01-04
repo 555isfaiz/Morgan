@@ -1,20 +1,13 @@
 package morgan.logic;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import morgan.connection.AbstractConnection;
-import morgan.messages.MessageBase;
 import morgan.messages.SCLogin;
 import morgan.structure.Node;
-import morgan.structure.Worker;
-import morgan.structure.serialize.OutputStream;
 import morgan.support.Log;
 import morgan.support.Utils;
-import morgan.support.functions.Function1;
 import morgan.support.functions.Function2;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Connection extends AbstractConnection {
@@ -73,7 +66,7 @@ public class Connection extends AbstractConnection {
     }
 
     protected void onConnectionClosed() {
-		this.schdule(100, () -> {
+		this.schedule(100, () -> {
 			if (_state == 0)
 				Lobby.playerLogOut_(_playerId);
 			else

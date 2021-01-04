@@ -6,9 +6,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Config {
-	public static Config MAIN_CONFIG_INST;
-
+public abstract class Config {
 	public static final String MAIN_CONFIG = "./config/main.config";
 
 	public final String DB_URL = null;
@@ -21,11 +19,9 @@ public class Config {
 
 	public final Integer DB_WORKER_NUM = null;
 
-	static {
-		fill();
-	}
+	public final Integer DB_LOAD_FROM_META = null;
 
-	protected static Map<String, String> read(String fileName) {
+	protected Map<String, String> read(String fileName) {
 		Map<String, String> res = new HashMap<>();
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(fileName));
@@ -46,38 +42,36 @@ public class Config {
 		return res;
 	}
 
-	protected static void fillField(Field f, Config obj, String val) {
+	protected void fillField(Field f, String val) {
 		try {
 			f.setAccessible(true);
 			var type = f.getType();
 			if (type == Integer.class)
-				f.set(obj, Integer.valueOf(val));
+				f.set(this, Integer.valueOf(val));
 			else if (type == Long.class)
-				f.set(obj, Long.valueOf(val));
+				f.set(this, Long.valueOf(val));
 			else if (type == Double.class)
-				f.set(obj, Double.valueOf(val));
+				f.set(this, Double.valueOf(val));
 			else if (type == Float.class)
-				f.set(obj, Float.valueOf(val));
+				f.set(this, Float.valueOf(val));
 			else if (type == Boolean.class)
-				f.set(obj, Boolean.valueOf(val));
+				f.set(this, Boolean.valueOf(val));
 			else
-				f.set(obj, val);
+				f.set(this, val);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static void fill() {
-		Config inst = new Config();
+	public void fill() {
 		var pairs = read(MAIN_CONFIG);
 		for (var f : Config.class.getDeclaredFields()) {
 			if (pairs.containsKey(f.getName()))
-				fillField(f, inst, pairs.get(f.getName()));
+				fillField(f, pairs.get(f.getName()));
 		}
-		MAIN_CONFIG_INST = inst;
 		fillOverride();
 	}
 
-	protected static void fillOverride() {}
+	protected abstract void fillOverride();
 }

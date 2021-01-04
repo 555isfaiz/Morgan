@@ -5,6 +5,7 @@ import morgan.structure.Call;
 import morgan.structure.Node;
 import morgan.structure.Worker;
 import morgan.support.Config;
+import morgan.support.Factory;
 import morgan.support.Log;
 import morgan.support.functions.Function1;
 import morgan.support.functions.Function2;
@@ -49,7 +50,7 @@ public class DBWorker extends Worker {
         if (dbInited)
             return;
         try {
-            dbconn_ = DriverManager.getConnection(Config.MAIN_CONFIG_INST.DB_URL, Config.MAIN_CONFIG_INST.DB_USER, Config.MAIN_CONFIG_INST.DB_PASSWORD);
+            dbconn_ = DriverManager.getConnection(Factory.configInstance().DB_URL, Factory.configInstance().DB_USER, Factory.configInstance().DB_PASSWORD);
             DatabaseMetaData meta = dbconn_.getMetaData();
             Statement stat = dbconn_.createStatement();
             for (var table : tables) {

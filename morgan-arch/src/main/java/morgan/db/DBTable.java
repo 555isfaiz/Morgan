@@ -5,6 +5,7 @@ import morgan.db.tasks.DBTaskQueryWithBinds;
 import morgan.db.tasks.DBTaskQueryWithId;
 import morgan.structure.Call;
 import morgan.support.Config;
+import morgan.support.Factory;
 import morgan.support.Log;
 
 import java.sql.ResultSet;
@@ -209,7 +210,7 @@ public class DBTable {
 //                System.out.println("now");
             if(q.size() >= 1) {
                 DBTask t = q.poll();
-                int size = Math.min(q.size(), Config.MAIN_CONFIG_INST.DB_MERGE_LIMIT);
+                int size = Math.min(q.size(), Factory.configInstance().DB_MERGE_LIMIT);
                 for (int i = 0; i < size; i++) {
                     try {
                         t = t.merge(q.peek());

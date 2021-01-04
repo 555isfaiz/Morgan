@@ -1,7 +1,5 @@
 package morgan.support;
 
-import java.util.List;
-
 import io.netty.channel.Channel;
 import morgan.connection.AbstractConnection;
 import morgan.messages.IConstMessage;
@@ -15,9 +13,13 @@ public class Factory {
 
 	private static Class<? extends AbstractConnection> connectionClz_;
 
+	private static Class<? extends Config> configClz_;
+
 	private static IConstMessage messageMap_;
 
 	private static IConstDistrClass distrClass_;
+
+	private static Config config_;
 
 	public static void designateConstMessage(Class<? extends IConstMessage> clazz) {
 		Factory.messageMapClass_ = clazz;
@@ -29,6 +31,10 @@ public class Factory {
 
 	public static void designateConnectionClass(Class<? extends AbstractConnection> clazz) {
 		Factory.connectionClz_ = clazz;
+	}
+
+	public static void designateConfigClass(Class<? extends Config> clazz) {
+		Factory.configClz_ = clazz;
 	}
 
 	public static IConstMessage messageMapInstance(){
@@ -67,6 +73,28 @@ public class Factory {
 			}
 		}
 		return distrClass_;
+	}
+
+	public static Config configInstance() {
+		if (config_ == null) {
+			synchronized (Factory.class) {
+				if (config_ == null) {
+					try {
+						if (configClz_ == null)
+							config_ = new Config() {
+								@Override
+								protected void fillOverride() {}
+							};
+						else
+							config_ = configClz_.getConstructor().newInstance();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					config_.fill();
+				}
+			}
+		}
+		return config_;
 	}
 
 	public static AbstractConnection newConnectionInstance(Node node, Channel channel, int connId) {

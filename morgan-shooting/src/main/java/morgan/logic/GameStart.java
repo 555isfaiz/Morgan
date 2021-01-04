@@ -29,6 +29,6 @@ public class GameStart {
         NtvManager.setNtvFunctions(new NtvFunctions());
         NtvManager.loadMeshes("./objs/Player.obj");
         node.startUp();
-        lobby.schdule(1000, () -> GlobalPlayerManager.playerLogout_(10));
+        lobby.schedule(1000, () -> GlobalPlayerManager.playerLogout_(10));
     }
 }

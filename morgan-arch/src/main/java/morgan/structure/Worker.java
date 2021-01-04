@@ -208,7 +208,7 @@ public abstract class Worker {
     protected void deleteMe(){
     }
 
-    public void schdule(long delay, Function0 f) {
+    public void schedule(long delay, Function0 f) {
         long time = System.currentTimeMillis() + delay;
         scheduler_.put(time, f);
     }
