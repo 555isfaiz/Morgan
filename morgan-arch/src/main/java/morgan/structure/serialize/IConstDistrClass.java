@@ -1,7 +1,7 @@
 package morgan.structure.serialize;
 
 public interface IConstDistrClass {
-	public int getDistrClassId(Serializable s);
+	int getDistrClassId(Serializable s);
 
-	public Serializable getDistrClassById(int id);
+	Serializable getDistrClassById(int id);
 }

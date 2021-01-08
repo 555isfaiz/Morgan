@@ -17,30 +17,28 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class DBTable {
     private Map<Integer, DBItem> items_ = new HashMap<>();
     private Map<String, DBItemTypes> columns_ = new LinkedHashMap<>(); //keep order
-    private List<Integer> uniqueIndexs_ = new ArrayList<>();
+    private List<Integer> uniqueIndexs_ = new ArrayList<>();		// start from zero
     private Map<Integer, LinkedBlockingQueue<DBTask>> tasks_ = new HashMap<>();
     private String name_;
     private DBWorker worker_;
 
+    public DBTable(DBWorker worker, String tableName, Map<String, DBItemTypes> columns, List<Integer> uniqueIndexs_) {
+
+	}
+
     public DBTable(DBWorker worker, String tableName, ResultSet tableInfo, ResultSet columns) {
         worker_ = worker;
         try {
-            ResultSetMetaData meta = columns.getMetaData();
-
             //set labels and types
-            for (int i = 1; i <= meta.getColumnCount(); i++) {
-                String name = meta.getColumnName(i).intern();
-                columns_.put(name, DBItemTypes.getEnumFromType(meta.getColumnType(i)));
-            }
+			while (columns.next()) {
+				columns_.put(columns.getString("Field"), DBItemTypes.getEnumFromString(columns.getString("Type")));
+			}
 
             //unique index
             while (tableInfo.next()) {
                 String indexName = tableInfo.getString("COLUMN_NAME");
                 uniqueIndexs_.add(getIndexByLabel(indexName));
             }
-
-            //load items
-//            loadItems(columns);
 
             name_ = tableName;
 

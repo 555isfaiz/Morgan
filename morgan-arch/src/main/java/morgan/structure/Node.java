@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * <p>
@@ -29,14 +31,15 @@ public class Node {
     private String _name;
     private String _addr;
 
-    private NodeEngines _group = new NodeEngines(20);
+    private final NodeEngines _group = new NodeEngines(20);
 
     private final ZMQ.Context _c = ZMQ.context(3);
     private final ZMQ.Socket _puller = _c.socket(SocketType.PULL);
 
-    private Map<String, Worker> _all_workers = new ConcurrentHashMap<>();
-    private ConcurrentLinkedQueue<Worker> _dispachable_workers = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<Call> _call_queue = new ConcurrentLinkedQueue<>();
+    private final ReadWriteLock workerLock_ = new ReentrantReadWriteLock();
+    private final Map<String, Worker> _all_workers = new ConcurrentHashMap<>();
+    private final ConcurrentLinkedQueue<Worker> _dispachable_workers = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Call> _call_queue = new ConcurrentLinkedQueue<>();
 
     /*key: method name, value: node name*/
     //TODO call dest's value should be a list of morgan.nodes, make it happen in future
@@ -93,14 +96,24 @@ public class Node {
     }
 
     public void addWorker(Worker worker){
-        _all_workers.put(worker.getName(), worker);
-        _dispachable_workers.add(worker);
+    	workerLock_.writeLock().lock();
+    	try {
+        	_all_workers.put(worker.getName(), worker);
+        	_dispachable_workers.add(worker);
+		} finally {
+    		workerLock_.writeLock().unlock();
+		}
         addLocalMethod(worker);
     }
 
     public void addWorkerStandAlone(Worker worker){
-        _all_workers.put(worker.getName(), worker);
-        _group.bindAndRun(null, worker::pulse, null);
+    	workerLock_.writeLock().lock();
+    	try {
+			_all_workers.put(worker.getName(), worker);
+			_group.bindAndRun(worker::onStart, worker::pulse, worker::onEnd);
+		} finally {
+    		workerLock_.writeLock().unlock();
+		}
         addLocalMethod(worker);
     }
 
@@ -235,19 +248,16 @@ public class Node {
         return dest;
     }
 
-    //TODO create a LobbyManager
-    @Deprecated
-    public int queryWorkerId(String workerName){
-        List<String> workers = new ArrayList<>();
-        for (var n : _call_dest.keySet()) {
-            if (n.startsWith(workerName))
-                workers.add(n);
-        }
-
-        int r = Utils.nextInt(0, workers.size() - 1);
-        String sessionId = workers.get(r).split("&")[0].split("\\$")[1];
-        return Integer.parseInt(sessionId);
-    }
+    public Worker anyWorker() {
+		List<Worker> workers;
+		workerLock_.readLock().lock();
+    	try {
+			 workers = new ArrayList<>(_all_workers.values());
+		} finally {
+    		workerLock_.readLock().unlock();
+		}
+    	return workers.get(Utils.nextInt(0, workers.size()));
+	}
 
     public String getName(){
         return _name;

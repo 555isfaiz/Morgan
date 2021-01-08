@@ -49,21 +49,37 @@ public class DBWorker extends Worker {
     public void init(List<String> tables) {
         if (dbInited)
             return;
+
         try {
             dbconn_ = DriverManager.getConnection(Factory.configInstance().DB_URL, Factory.configInstance().DB_USER, Factory.configInstance().DB_PASSWORD);
             DatabaseMetaData meta = dbconn_.getMetaData();
             Statement stat = dbconn_.createStatement();
             for (var table : tables) {
                 ResultSet indexInfo = meta.getIndexInfo(null, null, table, false, false);
-                ResultSet columns = stat.executeQuery("SELECT * FROM " + table + ";");
+                ResultSet columns = stat.executeQuery("show full columns from " + table + ";");
                 loadTable(table, indexInfo, columns);
             }
             dbInited = true;
         } catch (Exception e) {
             Log.db.error("init db worker failed, e:{}", e.getMessage());
+            e.printStackTrace();
         }
         Log.db.info("{} inited! tables:{}", _name, tables_.keySet());
     }
+
+    public void init(Map<String, DBTable> tables) {
+		if (dbInited)
+			return;
+
+		try {
+			dbconn_ = DriverManager.getConnection(Factory.configInstance().DB_URL, Factory.configInstance().DB_USER, Factory.configInstance().DB_PASSWORD);
+			tables_ = tables;
+			dbInited = true;
+		} catch (Exception e) {
+			Log.db.error("init db worker failed, e:{}", e.getMessage());
+			e.printStackTrace();
+		}
+	}
 
     public void addTask(String table, DBTask task) {
         if (task.taskType_ == DBTask.TASK_QUERY) {
@@ -171,6 +187,7 @@ public class DBWorker extends Worker {
             }
         } catch (Exception e) {
             Log.db.error("DB Exception when executing: {} \n {}", sql, e);
+            e.printStackTrace();
         }
     }
 

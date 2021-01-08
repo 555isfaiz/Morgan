@@ -9,7 +9,7 @@ public class NodeEngines {
     public static final int MINIMUM_THREAD_NUMBER = 5;
     public static final int WARNING_THREAD_NUMBER = 30;
 
-    private ArrayList<Engine> engines = new ArrayList<>();
+    private final ArrayList<Engine> engines = new ArrayList<>();
 
     public NodeEngines(int threadNum){
         for (int i = 0; i < Math.max(threadNum, MINIMUM_THREAD_NUMBER); i++)

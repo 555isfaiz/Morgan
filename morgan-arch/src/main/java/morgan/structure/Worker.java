@@ -76,12 +76,12 @@ public abstract class Worker {
             }
 
             try {
-                var f = e.getValue();
+                var f = scheduler_.remove(e.getKey());
                 f.apply();
-                scheduler_.remove(e.getKey());
                 break;
             } catch (Exception ex) {
                 Log.worker.error("error during scheduling, e:{}", ex.getMessage());
+                ex.printStackTrace();
             }
         }
     }
@@ -241,8 +241,6 @@ public abstract class Worker {
     public static <T extends Worker> T getCurrentWorker(){
         return (T) _cur_Worker.get();
     }
-
-
 
     public static void CallWithStack(Object... args) {
         StackTraceElement[] stack = Thread.currentThread().getStackTrace();

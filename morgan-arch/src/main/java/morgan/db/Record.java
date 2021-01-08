@@ -64,6 +64,6 @@ public class Record implements Serializable {
     }
 
     public void free() {
-		DBWorker.free_(DBCenter.getAssignedWorkerId(table), table, (Integer) values.get("id"));
+		DBWorker.free_(DBManager.getAssignedWorkerId(table), table, (Integer) values.get("id"));
 	}
 }

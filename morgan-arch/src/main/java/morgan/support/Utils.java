@@ -3,6 +3,12 @@
  */
 package morgan.support;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -68,4 +74,29 @@ public class Utils {
             return min;
         return min + RANDOM.nextInt(max - min);
     }
+
+    public static List<Class<?>> getClassFromPackage(String packageName) {
+		List<Class<?>> list = new ArrayList<>();
+		var classLoader = Thread.currentThread().getContextClassLoader();
+		var path = packageName.replace('.', '/');
+		try {
+			var dirs = classLoader.getResources(path);
+			while (dirs.hasMoreElements()) {
+				var url = dirs.nextElement();
+
+				if (!url.getProtocol().equals("file"))
+					continue;
+
+				File d = new File(URLDecoder.decode(url.getFile(), StandardCharsets.UTF_8));
+				var files = d.listFiles(pathname -> pathname.getName().endsWith(".class"));
+
+				for (var file : files) {
+					list.add(classLoader.loadClass(packageName + "." + file.getName().substring(0, file.getName().length() - 6)));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
 }

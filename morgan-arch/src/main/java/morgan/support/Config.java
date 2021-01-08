@@ -21,6 +21,10 @@ public abstract class Config {
 
 	public final Integer DB_LOAD_FROM_META = null;
 
+	public final String DB_DEF_PATH = null;
+
+	public final Integer DB_CREATE_OR_UPDATE_BEFORE_START = null;
+
 	protected Map<String, String> read(String fileName) {
 		Map<String, String> res = new HashMap<>();
 		try {
