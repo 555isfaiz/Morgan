@@ -13,3 +13,5 @@ processResources {
 dependencies {
 	compile project(":morgan-arch")
 }
+
+jar.enabled = true

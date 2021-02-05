@@ -49,8 +49,7 @@ public class DBManager {
 		ResultSet rs = meta.getTables(null, null, null, new String[] { "TABLE" });
 		while (rs.next()) {
 			String tableName = rs.getString("TABLE_NAME");
-			int hash = Math.abs(tableName.hashCode());
-			int index = hash % Factory.configInstance().DB_WORKER_NUM;
+			int index = assign(tableName);
 			dbworkers_.put(tableName, "DBWorker-" + index);
 			assign.compute(index, (i, l) -> {
 				if (l == null)
@@ -78,7 +77,7 @@ public class DBManager {
 				continue;
 
 			var tableName = clz.getAnnotation(Table.class).tableName();
-			int index = tableName.hashCode() % Factory.configInstance().DB_WORKER_NUM;
+			int index = assign(tableName);
 			dbworkers_.put(tableName, "DBWorker-" + index);
 			var tables = assign.get(index);
 			if (tables == null) {
@@ -309,6 +308,13 @@ public class DBManager {
 		} catch (Exception e) {
     		e.printStackTrace();
 		}
+	}
+
+	public static int assign(String tableName) {
+    	if (tableName == null || tableName.isBlank())
+    		return -1;
+
+    	return Math.abs(tableName.hashCode()) % Factory.configInstance().DB_WORKER_NUM;
 	}
 
     public static String getAssignedWorker(String table) {

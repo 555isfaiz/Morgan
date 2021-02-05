@@ -14,12 +14,16 @@ public class Record implements Serializable {
 
     public Map<String, Object> values = new LinkedHashMap<>();
     public String table;
+    public boolean persisted;
+
+    public Record() {}
 
     public Record(DBItem item) {
         for (int i = 0; i < item.columnSize(); i++) {
             String label = item.table().getLabelByIndex(i);
             values.put(label, item.getColumn(i));
         }
+        persisted = true;
     }
 
     public Record(ResultSet rs) {
@@ -47,23 +51,24 @@ public class Record implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        persisted = true;
     }
 
     @Override
     public void writeOut(OutputStream out) throws IOException {
         out.write(values);
+        out.write(table);
+        out.write(persisted);
     }
 
     @Override
     public void readIn(InputStream in) throws IOException {
         values = in.read();
+        table = in.read();
+        persisted = in.read();
     }
 
     public String toString() {
         return values.toString();
     }
-
-    public void free() {
-		DBWorker.free_(DBManager.getAssignedWorkerId(table), table, (Integer) values.get("id"));
-	}
 }

@@ -4,34 +4,77 @@ dependencies {
 	compile fileTree(dir: 'lib', include: ['*.jar'])
 }
 
-//task buildShooting(type: Copy) {
-	processResources {
-		from('morgan-shooting/src/main/resources') {
-			include '*.dll'
-		}
-		from('config') {
-			include '*.xml'
-		}
+processResources {
+	from('morgan-shooting/src/main/resources') {
+		include '*.dll'
 	}
+	from('config') {
+		include '*.*'
+	}
+	from('morgan-card/config') {
+		include '*.*'
+	}
+}
+
+task packCard(type: org.gradle.api.tasks.bundling.Jar) {
+	baseName 'morgan-card'
 
 	sourceSets {
 		main {
 			java {
 				srcDir 'morgan-arch'
-				srcDir 'morgan-shooting'
 				srcDir 'morgan-card'
 			}
 		}
 	}
 
-	jar {
-		manifest {
-			attributes 'Main-Class': 'morgan.logic.GameStart'
-		}
-		from {
-			configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-		}
+	copy {
+		from('config/')
+		into('build/config')
 	}
+	from('config/') {
+		include('*.xml')
+	}
+	from('morgan-arch/build/classes/java/main/')
+	from('morgan-card/build/classes/java/main/')
+	copy {
+		from('./morgan-card/config/')
+		into('build/morgan-card/config')
+	}
+	from {
+		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+	destinationDir = file('build/')
+}
+packCard.dependsOn(build)
+
+//task packShooting(type:org.gradle.api.tasks.bundling.Jar) {
+//	baseName 'morgan-shooting'
+//
+//	sourceSets {
+//		main {
+//			java {
+//				srcDir 'morgan-arch'
+//				srcDir 'morgan-shooting'
+//			}
+//		}
+//	}
+//
+//	copy {
+//		from('config/')
+//		into('build/config')
+//	}
+//	from('config/') {
+//		include('*.xml')
+//	}
+//	from('morgan-arch/build/classes/java/main/')
+//	from('morgan-shooting/build/classes/java/main/')
+//	from('morgan-shooting/src/main/resources')
+//	from {
+//		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+//	}
+//	destinationDir = file('build/')
 //}
+//packShooting.dependsOn(build)
 
 
