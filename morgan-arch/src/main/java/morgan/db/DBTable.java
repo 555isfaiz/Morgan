@@ -22,8 +22,11 @@ public class DBTable {
     private String name_;
     private DBWorker worker_;
 
-    public DBTable(DBWorker worker, String tableName, Map<String, DBItemTypes> columns, List<Integer> uniqueIndexs_) {
-
+    public DBTable(DBWorker worker, String tableName, Map<String, DBItemTypes> columns, List<Integer> uniqueIndexs) {
+        worker_ = worker;
+        name_ = tableName;
+        columns_ = columns;
+        uniqueIndexs_ = uniqueIndexs;
 	}
 
     public DBTable(DBWorker worker, String tableName, ResultSet tableInfo, ResultSet columns) {
@@ -98,7 +101,7 @@ public class DBTable {
                 if (uniqueIndexs_.contains(index)) {
                     for (var i : items_.values()) {
                         if (i.getColumn(index).equals(values.get(e.getKey()))) {
-                            Log.db.warn("item unique column collied! item:{}", values);
+                            Log.db.error("item unique column collied! item:{}", values);
                             return -1;
                         }
                     }
@@ -118,7 +121,7 @@ public class DBTable {
 
         addTask(cid, i.onInsert());
 
-        Log.db.info("item inserted! table:{}, item:{}", name_, values);
+        Log.db.debug("item inserted! table:{}, item:{}", name_, values);
 
         return 0;
     }

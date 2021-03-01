@@ -201,6 +201,16 @@ public abstract class Worker {
         _result_listen_queue.put(_call_sent_id, rl);
     }
 
+    public static void Listen_(Function1<Result> f, Object...contexts) {
+        var current = getCurrentWorker();
+        if (current == null) {
+            Log.node.error("call not in worker!");
+            return;
+        }
+
+        current.Listen(f, contexts);
+    }
+
     protected Call getCurrentCall(){
         return _call_queue.peek();
     }
@@ -276,7 +286,7 @@ public abstract class Worker {
             return;
         }
         var tmp = caller.getClassName().split("\\.");
-        String className = workerId == -1 ? tmp[tmp.length - 1] : tmp[tmp.length - 1] + "$" + workerId;
+        String className = workerId == -1 ? tmp[tmp.length - 1] : tmp[tmp.length - 1] + "-" + workerId;
         var t = caller.getMethodName();
         String method = t.substring(0, t.length() - 1);
         StaticCall(className, method, args);

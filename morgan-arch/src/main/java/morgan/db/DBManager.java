@@ -76,6 +76,7 @@ public class DBManager {
 			if (!clz.isAnnotationPresent(Table.class))
 				continue;
 
+			Log.db.info("scanned db config class: {}", clz.getName());
 			var tableName = clz.getAnnotation(Table.class).tableName();
 			int index = assign(tableName);
 			dbworkers_.put(tableName, "DBWorker-" + index);

@@ -1,5 +1,6 @@
 package morgan.card;
 
+import morgan.DBDefs.TestDB;
 import morgan.connection.ConnStarter;
 import morgan.db.DBManager;
 import morgan.structure.Node;
@@ -12,5 +13,15 @@ public class GameStartUp {
 		Factory.designateConfigClass(ConfigImpl.class);
 		DBManager.initDB(node);
 		node.startUp();
+		node.anyWorker().schedule(100, () -> {
+			var test = new TestDB();
+			test.setId(42123);
+			test.setKey_one(111);
+			test.setKey_two("this is key_two");
+			test.setKey_four(true);
+			test.setKey_five(Long.MAX_VALUE);
+			test.setKey_six(Long.MIN_VALUE);
+			test.save();
+		});
 	}
 }

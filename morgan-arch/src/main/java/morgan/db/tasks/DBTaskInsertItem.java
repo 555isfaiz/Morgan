@@ -31,7 +31,14 @@ public class DBTaskInsertItem extends DBTask {
         sql.append(") VALUES (");
 
         for (int i = 0; i < values_.size(); i++) {
-            sql.append("'").append(values_.get(i)).append("'");
+            if (values_.get(i) instanceof String)
+                sql.append("'");
+
+            sql.append(values_.get(i));
+
+            if (values_.get(i) instanceof String)
+                sql.append("'");
+
             if (i != values_.size() - 1)
                 sql.append(", ");
         }

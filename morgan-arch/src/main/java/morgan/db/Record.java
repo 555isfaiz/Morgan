@@ -16,13 +16,16 @@ public class Record implements Serializable {
     public String table;
     public boolean persisted;
 
-    public Record() {}
+    public Record(String tableName) {
+        table = tableName;
+    }
 
     public Record(DBItem item) {
         for (int i = 0; i < item.columnSize(); i++) {
             String label = item.table().getLabelByIndex(i);
             values.put(label, item.getColumn(i));
         }
+        table = item.table().name();
         persisted = true;
     }
 

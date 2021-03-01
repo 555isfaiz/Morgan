@@ -38,7 +38,7 @@ public class DBWorker extends Worker {
                 continue;
             }
             t.process(dbconn_);
-            Log.db.info("task executed! task:{}, sql:{}", t.getClass().getName(), t.sql_);
+            Log.db.debug("task executed! task:{}, sql:{}", t.getClass().getName(), t.sql_);
         }
 
         for (var table : tables_.values()) {
@@ -163,7 +163,7 @@ public class DBWorker extends Worker {
         t.remove(cid);
     }
 
-    public void remove_(int workerId, String table, int cid) {
+    public static void remove_(int workerId, String table, int cid) {
     	CallWithStack0(workerId, table, cid);
 	}
 

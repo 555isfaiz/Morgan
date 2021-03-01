@@ -29,13 +29,13 @@ public class NettyServer extends Thread {
         EventLoopGroup workerGroup = null;
         Class<? extends ServerChannel> channelClass = NioServerSocketChannel.class;
         int nThreads = Runtime.getRuntime().availableProcessors();
-        if (System.getProperty("os.name").toLowerCase().contains("windows")){
-            bossGroup = new NioEventLoopGroup();
-            workerGroup = new NioEventLoopGroup(nThreads);
-        } else {
+        if (System.getProperty("os.name").toLowerCase().contains("linux")){
             bossGroup = new EpollEventLoopGroup();
             workerGroup = new EpollEventLoopGroup(nThreads);
             channelClass = EpollServerSocketChannel.class;
+        } else {
+            bossGroup = new NioEventLoopGroup();
+            workerGroup = new NioEventLoopGroup(nThreads);
         }
         try {
             ServerBootstrap b = new ServerBootstrap();
