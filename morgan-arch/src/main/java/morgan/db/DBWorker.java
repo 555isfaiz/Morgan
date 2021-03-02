@@ -155,7 +155,7 @@ public class DBWorker extends Worker {
     	CallWithStack0(workerId, table, cid, labels, values);
 	}
 
-    public void remove(String table, int cid) {
+    public void remove(String table, long cid) {
         var t = tables_.get(table);
         if (t == null)
             return;
@@ -163,7 +163,7 @@ public class DBWorker extends Worker {
         t.remove(cid);
     }
 
-    public static void remove_(int workerId, String table, int cid) {
+    public static void remove_(int workerId, String table, long cid) {
     	CallWithStack0(workerId, table, cid);
 	}
 
@@ -203,7 +203,7 @@ public class DBWorker extends Worker {
 		t.free(cid);
 	}
 
-	public static void free_(int workerId, String table, int cid) {
+	public static void free_(int workerId, String table, long cid) {
     	CallWithStack0(workerId, table, cid);
 	}
 

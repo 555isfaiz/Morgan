@@ -41,7 +41,7 @@ public class DBItem {
 
     public DBTask onRemove() {
         DBTask task = new DBTaskRemoveItem();
-        task.cid_ = (int)getColumn(0);
+        task.cid_ = (long)getColumn(0);
         return task;
     }
 

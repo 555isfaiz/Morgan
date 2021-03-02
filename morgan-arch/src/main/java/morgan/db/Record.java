@@ -35,20 +35,13 @@ public class Record implements Serializable {
             for (int i = 1; i <= meta.getColumnCount(); i++) {
                 String name = meta.getColumnName(i).intern();
                 switch (DBItemTypes.getEnumFromType(meta.getColumnType(i))) {
-                    case SMALLINT:
-                    case TINYINT:
-                    case INT:
-                        values.put(name, rs.getInt(i));
-                    case BIGINT:
-                        values.put(name, rs.getLong(i));
-                    case BLOB:
-                        values.put(name, rs.getBytes(i));
-                    case FLOAT:
-                        values.put(name, rs.getFloat(i));
-                    case DOUBLE:
-                        values.put(name, rs.getDouble(i));
-                    case VARCHAR:
-                        values.put(name, rs.getString(i));
+                    case SMALLINT, INT -> values.put(name, rs.getInt(i));
+                    case TINYINT -> values.put(name, rs.getBoolean(i));
+                    case BIGINT -> values.put(name, rs.getLong(i));
+                    case BLOB -> values.put(name, rs.getBytes(i));
+                    case FLOAT -> values.put(name, rs.getFloat(i));
+                    case DOUBLE -> values.put(name, rs.getDouble(i));
+                    case VARCHAR -> values.put(name, rs.getString(i));
                 }
             }
         } catch (Exception e) {

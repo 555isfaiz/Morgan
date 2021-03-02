@@ -15,10 +15,10 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class DBTable {
-    private Map<Integer, DBItem> items_ = new HashMap<>();
+    private Map<Long, DBItem> items_ = new HashMap<>();
     private Map<String, DBItemTypes> columns_ = new LinkedHashMap<>(); //keep order
     private List<Integer> uniqueIndexs_ = new ArrayList<>();		// start from zero
-    private Map<Integer, LinkedBlockingQueue<DBTask>> tasks_ = new HashMap<>();
+    private Map<Long, LinkedBlockingQueue<DBTask>> tasks_ = new HashMap<>();
     private String name_;
     private DBWorker worker_;
 
@@ -91,7 +91,7 @@ public class DBTable {
 //    }
 
 	public void addItem(DBItem item) {
-    	items_.put((Integer) item.getColumn(0), item);
+    	items_.put((Long) item.getColumn(0), item);
 	}
 
     public int insert(Map<String, Object> values) {
@@ -116,7 +116,7 @@ public class DBTable {
             i.addColumn(v);
         }
         i.table(this);
-        int cid = (Integer)i.getColumn(0);
+        long cid = (Long)i.getColumn(0);
         items_.put(cid, i);
 
         addTask(cid, i.onInsert());
@@ -139,7 +139,7 @@ public class DBTable {
         addTask(cid, item.onUpdate(index, values));
     }
 
-    public void remove(int cid) {
+    public void remove(long cid) {
         var i = items_.remove(cid);
         if (i == null)
             return;
@@ -149,7 +149,7 @@ public class DBTable {
         Log.db.info("item removed! table:{}, cid:{}", name_, cid);
     }
 
-    public void query(Call queryCall, int cid) {
+    public void query(Call queryCall, long cid) {
         var item = items_.get(cid);
         if (item == null) {
             DBTask task = new DBTaskQueryWithBinds();
@@ -176,14 +176,14 @@ public class DBTable {
         worker_.addTask(name_, taks);
     }
 
-    public void free(int cid) {
+    public void free(long cid) {
 		if (!tasks_.isEmpty())
 			mergeAndCommit();
 
 		items_.remove(cid);
 	}
 
-    public void addTask(int cid, DBTask task) {
+    public void addTask(long cid, DBTask task) {
         task.tableName_ = name_;
         //set labels
         List<String> labels = new ArrayList<>(columns_.keySet());

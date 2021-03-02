@@ -32,6 +32,7 @@ public class DBTaskQueryWithBinds extends DBTask {
             List<Record> r = new ArrayList<>();
             while (result.next()) {
             	var record = new Record(result);
+            	record.table = tableName_;
                 r.add(record);
 				var item = new DBItem(table_, record);
 				table_.addItem(item);
@@ -39,6 +40,7 @@ public class DBTaskQueryWithBinds extends DBTask {
             queryCallBack_.apply(r, queryCall_);
         } catch (Exception e) {
             Log.db.error("SELECT error, sql:{} , cid:{}", sql_, cid_);
+            e.printStackTrace();
         }
     }
 

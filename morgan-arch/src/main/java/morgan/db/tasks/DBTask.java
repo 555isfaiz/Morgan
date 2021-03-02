@@ -23,7 +23,7 @@ public abstract class DBTask {
 
     public DBTable table_;
 
-    public int cid_;
+    public long cid_;
 
     public List<String> labels_ = new ArrayList<>();
 
