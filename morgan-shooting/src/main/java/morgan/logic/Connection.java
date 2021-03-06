@@ -2,8 +2,10 @@ package morgan.logic;
 
 import io.netty.channel.Channel;
 import morgan.connection.AbstractConnection;
+import morgan.messages.CSLogin;
 import morgan.messages.SCLogin;
 import morgan.structure.Node;
+import morgan.structure.serialize.InputStream;
 import morgan.support.Log;
 import morgan.support.Utils;
 import morgan.support.functions.Function2;
@@ -24,7 +26,6 @@ public class Connection extends AbstractConnection {
     public Connection(Node node, Channel channel, int id) {
         super(node, channel, id);
 
-        _playerId = idMalloc.incrementAndGet();
         _started = true;
     }
 
@@ -36,7 +37,14 @@ public class Connection extends AbstractConnection {
 
         //randomly distrbute to a lobby
         if (msgId == 1001) {
-            PlayerInfo p = new PlayerInfo(_playerId, _connId, _node.getName(), "player" + _playerId);
+            InputStream in = new InputStream(msgBuf);
+            CSLogin loginMsg = in.read();
+            _playerId = idMalloc.incrementAndGet();
+            if (loginMsg.isShooter && _playerId % 2 != 0) {
+                //shooter's id should be even
+                _playerId = idMalloc.incrementAndGet();
+            }
+            PlayerInfo p = new PlayerInfo(_playerId, _connId, _node.getName(), "player" + _playerId, loginMsg.isShooter);
 
             GlobalPlayerManager.playerLogin_(p);
 
@@ -53,8 +61,6 @@ public class Connection extends AbstractConnection {
             Game.handleGameMsg_(_sessionId, _playerId, msgBuf);
         }
     }
-
-
 
     public void changeState(int state, int sessionId){
         _state = state;

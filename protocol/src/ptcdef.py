@@ -12,6 +12,8 @@ class Message:
     def getJavaType(self, ptcType):
         if ptcType == "string":
             return "String"
+        if ptcType == "bool":
+            return "boolean"
         return ptcType
     
     def getConstJavaClassToId(self):

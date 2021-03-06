@@ -47,7 +47,7 @@ public class MessageSender {
     public static void sendMsgToPlayer(String node, int connId, byte[] msg){
         Worker worker = Worker.getCurrentWorker();
         Node from = worker.getNode();
-        String workerName = "Connection$" + connId;
+        String workerName = "Connection-" + connId;
         Call call = new Call();
         call.callType = Call.CALL_TYPE_RPC;
         call.method = workerName + "&" + "sendMsgBytes";

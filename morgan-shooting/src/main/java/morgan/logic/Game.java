@@ -21,7 +21,7 @@ public class Game extends Worker {
     private boolean gameEnded_ = false;
 
     public Game(Node node, int id) {
-        super(node, "Game$" + id);
+        super(node, "Game-" + id);
 
         _ntvGame = new NtvGame();
         _ntvGame.create(id);

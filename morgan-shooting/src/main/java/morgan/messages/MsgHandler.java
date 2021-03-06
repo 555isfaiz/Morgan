@@ -21,13 +21,20 @@ public class MsgHandler {
 
     private Map<Integer, Object> _handler_map = new HashMap<>();
 
+    InputStream in = null;
+
     public MsgHandler(Worker worker){
         _owner = worker;
         loadHandlers(this);
     }
 
     public void handle(int sender, byte[] msg){
-        InputStream in = new InputStream(msg);
+        if (in == null) {
+            in = new InputStream(msg);
+        } else {
+            in.resetCursor();
+            in.setBuffer(msg);
+        }
         MessageBase m = in.read();
         handle(sender, m);
     }

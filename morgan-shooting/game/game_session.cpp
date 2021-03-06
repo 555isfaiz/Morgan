@@ -88,24 +88,24 @@ namespace msgame
             msg->sessionId = sessionId_;
             int32 sideOnes = 0;
             
-            int32 index[] = {0, 0, 0, 0};
+            // int32 index[] = {0, 0, 0, 0};
             for (int32 i = 0; i < ids.size(); i++)
             {
                 int32 id = ids.at(i);
                 std::string name = names.at(i);
 
-                int32 number = 0;
+                int32 number = id % 2;
 
-                rand:
-                number = rand() % 4 + 1;
-                if (index[number - 1] == 1)
-                {
-                    goto rand;
-                } 
-                else
-                {
-                    index[number - 1] = 1;
-                }
+                // rand:
+                // number = rand() % 4 + 1;
+                // if (index[number - 1] == 1)
+                // {
+                //     goto rand;
+                // } 
+                // else
+                // {
+                //     index[number - 1] = 1;
+                // }
                 
                 GAMEOBJECT::Player *p = new GAMEOBJECT::Player(id, name, number);
                 players_.insert(std::pair<int32, gameobject::Player*>(id, p));
@@ -115,7 +115,7 @@ namespace msgame
 
             for (int32 i = 0; i < ids.size(); i++)
             {
-                msg->mySide = (players_.find(ids.at(i))->second->number_) % 2 == 0 ? 1 : 2;
+                msg->mySide = ids[i] % 2;
                 SendMsg(ids.at(i), msg);
             }
 

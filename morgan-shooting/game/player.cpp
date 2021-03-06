@@ -12,16 +12,27 @@ namespace msgame
         {
             VECTOR::Vector3 v;
 
-            //side == 2
-            if (number_ % 2 == 0)
-                v.z = 6.0f;
-            else
-                v.z = -6.0f;
+            // //side == 2
+            // if (number_ % 2 == 0)
+            //     v.z = 6.0f;
+            // else
+            //     v.z = -6.0f;
 
-            if (number_ / 2 == 1)
-                v.x = 6.0f;
-            else
-                v.x = -6.0f;
+            // if (number_ / 2 == 1)
+            //     v.x = 6.0f;
+            // else
+            //     v.x = -6.0f;
+            if (number_ == 0)
+            {
+                v.x = 0.0f;
+                v.z = 0.0f;
+            } 
+            else 
+            {
+                v.x = 0.0f;
+                v.z = 6.0f;
+            }
+            
 
             v.y = 0.7f;
 

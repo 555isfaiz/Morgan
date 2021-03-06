@@ -55,11 +55,13 @@ namespace msmessage
 
     void CSLogin::write(STREAM::OutputStream* out)
     {
+        out->write(isShooter);
 
     }
 
     void CSLogin::read(STREAM::InputStream* in)
     {
+        isShooter = in->ReadBool();
 
     }
 

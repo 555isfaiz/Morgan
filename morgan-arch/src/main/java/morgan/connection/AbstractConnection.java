@@ -21,7 +21,7 @@ public abstract class AbstractConnection extends Worker {
 	protected ConcurrentLinkedQueue<byte[]> _send = new ConcurrentLinkedQueue<>();
 
 	public AbstractConnection(Node node, Channel channel, int connId) {
-		super(node, "Connection$" + connId);
+		super(node, "Connection-" + connId);
 
 		_channel = channel;
 		_connId = connId;

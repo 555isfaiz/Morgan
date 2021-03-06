@@ -68,6 +68,7 @@ namespace msmessage
     class CSLogin : public MessageBase 
     {
     public:
+        bool isShooter;
 
         void write(msutils::msstream::OutputStream* out) override ;
         void read(msutils::msstream::InputStream* in) override ;

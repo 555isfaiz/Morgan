@@ -15,13 +15,16 @@ public class PlayerInfo implements Serializable {
     private String _node;
     private String _name;
 
+    private boolean isShooter_;
+
     public PlayerInfo(){}
 
-    public PlayerInfo(int id, int connId, String node, String name){
+    public PlayerInfo(int id, int connId, String node, String name, boolean isShooter){
         _id = id;
         _connId = connId;
         _node = node;
         _name = name;
+        isShooter_ = isShooter;
     }
 
     public int getId() {
@@ -78,6 +81,12 @@ public class PlayerInfo implements Serializable {
         return this;
     }
 
+    public boolean isShooter() { return isShooter_; }
+
+    public void setShooter(boolean shooter_) {
+        isShooter_ = shooter_;
+    }
+
     @Override
     public void writeOut(OutputStream out) throws IOException {
         out.write(_id);
@@ -85,6 +94,7 @@ public class PlayerInfo implements Serializable {
         out.write(_state);
         out.write(_node);
         out.write(_name);
+        out.write(isShooter_);
     }
 
     @Override
@@ -94,5 +104,6 @@ public class PlayerInfo implements Serializable {
         _state = in.read();
         _node = in.read();
         _name = in.read();
+        isShooter_ = in.read();
     }
 }

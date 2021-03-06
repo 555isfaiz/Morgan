@@ -66,12 +66,12 @@ public class Lobby extends Worker {
     }
 
     private void pulseMatch(){
-        if (_lobby_players.size() < 4)
+        if (_lobby_players.size() < 2)
             return;
 
         List<PlayerInfo> list = new ArrayList<>();
         List<PlayerInfo> all = new ArrayList<>(_lobby_players.values());
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 2; i++) {
             var p = all.get(i);
             _lobby_players.remove(p.getId());
             list.add(p);
