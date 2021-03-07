@@ -19,6 +19,7 @@ public abstract class AbstractConnection extends Worker {
 	protected boolean _started;
 	protected LinkedBlockingQueue<byte[]> _recv = new LinkedBlockingQueue<>();
 	protected ConcurrentLinkedQueue<byte[]> _send = new ConcurrentLinkedQueue<>();
+	protected OutputStream out = new OutputStream();
 
 	public AbstractConnection(Node node, Channel channel, int connId) {
 		super(node, "Connection-" + connId);
@@ -80,7 +81,7 @@ public abstract class AbstractConnection extends Worker {
 	public void sendMsg(MessageBase msg){
 		if (msg == null)
 			return;
-		OutputStream out = new OutputStream();
+		out.reset();
 		out.write(msg);
 		sendMsgBytes(out.getBuffer());
 	}

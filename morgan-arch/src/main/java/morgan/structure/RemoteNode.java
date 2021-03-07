@@ -16,6 +16,7 @@ public class RemoteNode {
     private ZMQ.Socket _push = _context.socket(SocketType.PUSH);
     private long _nextPingTime;
     private long _lastPingRecvTime = 0;
+    private OutputStream out_ = new OutputStream();
 
     private Timmer _syncTimer = new Timmer(Timmer.TYPE_PERIOD, 10 * Time.SEC, false);
 
@@ -60,16 +61,15 @@ public class RemoteNode {
     }
 
     public void sendCall(Call call){
-        OutputStream out = new OutputStream();
         try {
-            out.write(call);
+            out_.write(call);
             synchronized (this){
-                _push.send(out.getBuffer());
+                _push.send(out_.getBuffer());
             }
         } catch (Exception e){
             e.printStackTrace();
         } finally {
-            out.reset();
+            out_.reset();
         }
     }
 

@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class GlobalPlayerManager extends Worker {
     private Map<Integer, PlayerInfo> _players = new HashMap<>();
+    private OutputStream out_ = new OutputStream();
 
     public GlobalPlayerManager(Node node) {
         super(node, "GlobalPlayerManager");
@@ -65,9 +66,9 @@ public class GlobalPlayerManager extends Worker {
     }
 
     public void sendMsg(int id, MessageBase msg){
-        OutputStream out = new OutputStream();
-        out.write(msg);
-        sendMsgBytes(id, out.getBuffer());
+        out_.reset();
+        out_.write(msg);
+        sendMsgBytes(id, out_.getBuffer());
     }
 
     public static void sendMsg_(int id, MessageBase msg) {
